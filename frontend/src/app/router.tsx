@@ -6,23 +6,32 @@ import { ProjectsPage } from "../pages/ProjectsPage";
 import { ProjectDetailsPage } from "../pages/ProjectDetailsPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 
+import { ProtectedLayout } from "../components/layout/ProtectedLayout";
+
 export const router = createBrowserRouter([
   {
     path: "/sign-in",
     element: <SignInPage />,
   },
+
   {
-    path: "/dashboard",
-    element: <DashboardPage />,
+    element: <ProtectedLayout />,
+    children: [
+      {
+        path: "/dashboard",
+        element: <DashboardPage />,
+      },
+      {
+        path: "/projects",
+        element: <ProjectsPage />,
+      },
+      {
+        path: "/projects/:projectId",
+        element: <ProjectDetailsPage />,
+      },
+    ],
   },
-  {
-    path: "/projects",
-    element: <ProjectsPage />,
-  },
-  {
-    path: "/projects/:projectId",
-    element: <ProjectDetailsPage />,
-  },
+
   {
     path: "*",
     element: <NotFoundPage />,
