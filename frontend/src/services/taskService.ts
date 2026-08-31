@@ -1,5 +1,6 @@
-import { seedTasks } from "../data/seed/tasks";
+import { mockDatabase } from "../data/mockDatabase";
 import type { Task } from "../types/task";
+
 import {
   consumeSimulatedFailure,
   simulateDelay,
@@ -12,5 +13,7 @@ export async function getTasks(): Promise<Task[]> {
     throw new Error("Unable to load tasks.");
   }
 
-  return [...seedTasks];
+  return mockDatabase.tasks.map((task) => ({
+    ...task,
+  }));
 }
