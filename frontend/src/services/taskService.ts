@@ -35,7 +35,89 @@ export async function getTasksByProjectId(
 
   return mockDatabase.tasks
     .filter(
-      (task) => task.projectId === projectId,
+      (task) =>
+        task.projectId === projectId,
     )
     .map(cloneTask);
+}
+
+export async function createTask(
+  task: Task,
+): Promise<Task> {
+  await simulateDelay();
+
+  if (consumeSimulatedFailure()) {
+    throw new Error(
+      "Unable to create task.",
+    );
+  }
+
+  mockDatabase.tasks.push({
+    ...task,
+  });
+
+  return cloneTask(task);
+}
+
+export async function updateTask(
+  taskId: string,
+  changes: Partial<Task>,
+): Promise<Task> {
+  await simulateDelay();
+
+  if (consumeSimulatedFailure()) {
+    throw new Error(
+      "Unable to update task.",
+    );
+  }
+
+  const taskIndex =
+    mockDatabase.tasks.findIndex(
+      (task) => task.id === taskId,
+    );
+
+  if (taskIndex === -1) {
+    throw new Error(
+      "Task could not be found.",
+    );
+  }
+
+  const updatedTask = {
+    ...mockDatabase.tasks[taskIndex],
+    ...changes,
+    updatedAt: new Date().toISOString(),
+  };
+
+  mockDatabase.tasks[taskIndex] =
+    updatedTask;
+
+  return cloneTask(updatedTask);
+}
+
+export async function deleteTask(
+  taskId: string,
+): Promise<void> {
+  await simulateDelay();
+
+  if (consumeSimulatedFailure()) {
+    throw new Error(
+      "Unable to delete task.",
+    );
+  }
+
+  const taskIndex =
+    mockDatabase.tasks.findIndex(
+      (task) => task.id === taskId,
+    );
+
+  if (taskIndex === -1) {
+    throw new Error(
+      "Task could not be found.",
+    );
+  }
+
+  mockDatabase.tasks.splice(
+    taskIndex,
+    1,
+  );
 }
