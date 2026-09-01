@@ -9,10 +9,16 @@ import {
 } from "../features/projects/useProjectDetailsData";
 
 import { TaskList } from "../features/tasks/TaskList";
+import {
+  useTaskFilters,
+} from "../features/tasks/useTaskFilters";
+
+import {
+  TaskFilters,
+} from "../features/tasks/TaskFilters";
 
 export function ProjectDetailsPage() {
   const { projectId } = useParams();
-
   const {
     project,
     tasks,
@@ -23,6 +29,13 @@ export function ProjectDetailsPage() {
     notFound,
     reload,
   } = useProjectDetailsData(projectId);
+
+  const {
+  filters,
+  visibleTasks,
+  updateFilters,
+  resetFilters,
+  } = useTaskFilters(tasks);
 
   if (isLoading) {
     return (
@@ -145,20 +158,45 @@ export function ProjectDetailsPage() {
             </p>
           </div>
         </div>
-
         {tasks.length === 0 ? (
           <EmptyState
-            title="No tasks yet"
-            description="This project doesn't have any tasks."
-          />
-        ) : (
-          <Card>
-            <TaskList
-              tasks={tasks}
-              users={users}
-            />
-          </Card>
-        )}
+          title="No tasks yet"
+          description="This project doesn't have any tasks."
+  />
+) : (
+  <>
+    <TaskFilters
+      filters={filters}
+      assignees={users}
+      onChange={updateFilters}
+    />
+
+    {visibleTasks.length === 0 ? (
+      <EmptyState
+        title="No tasks match your filters"
+        description="Try changing your search or filter selections."
+        action={
+          <button
+            type="button"
+            className="button button-secondary"
+            onClick={resetFilters}
+          >
+            Clear filters
+          </button>
+        }
+      />
+    ) : (
+      <Card>
+        <TaskList
+          tasks={visibleTasks}
+          users={users}
+        />
+      </Card>
+    )}
+  </>
+)}
+        
+
       </section>
     </>
   );

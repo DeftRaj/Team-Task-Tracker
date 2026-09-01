@@ -93,29 +93,38 @@ export function useProjectDetailsData(
     };
   }, [projectId]);
 
-  const isLoading =
-    Boolean(projectId) &&
-    state.loadedProjectId !== projectId;
+  const isCurrentProjectLoaded =
+  state.loadedProjectId === projectId;
 
-  const error =
-    state.loadedProjectId === projectId
-      ? state.error
-      : null;
+const isLoading =
+  Boolean(projectId) &&
+  !isCurrentProjectLoaded;
 
-  const project =
-    state.loadedProjectId === projectId
-      ? state.project
-      : null;
+const error =
+  isCurrentProjectLoaded
+    ? state.error
+    : null;
 
-  const tasks =
-    state.loadedProjectId === projectId
+const project =
+  isCurrentProjectLoaded
+    ? state.project
+    : null;
+
+const tasks = useMemo(
+  () =>
+    isCurrentProjectLoaded
       ? state.tasks
-      : [];
+      : [],
+  [isCurrentProjectLoaded, state.tasks],
+);
 
-  const users =
-    state.loadedProjectId === projectId
+const users = useMemo(
+  () =>
+    isCurrentProjectLoaded
       ? state.users
-      : [];
+      : [],
+  [isCurrentProjectLoaded, state.users],
+);
 
   const notFound =
     !projectId ||
