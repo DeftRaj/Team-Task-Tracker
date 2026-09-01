@@ -1,4 +1,7 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   createTask,
@@ -9,17 +12,28 @@ import {
 
 import type { Task } from "../../types/task";
 
+interface TaskState {
+  tasks: Task[];
+  isLoading: boolean;
+  error: string | null;
+}
+
 interface TaskMutationState {
   isSubmitting: boolean;
   error: string | null;
 }
 
+const initialState: TaskState = {
+  tasks: [],
+  isLoading: true,
+  error: null,
+};
+
 export function useProjectTasks(
   projectId: string | undefined,
-  initialTasks: Task[],
 ) {
-  const [tasks, setTasks] =
-    useState<Task[]>(initialTasks);
+  const [state, setState] =
+    useState<TaskState>(initialState);
 
   const [
     mutationState,
@@ -28,6 +42,45 @@ export function useProjectTasks(
     isSubmitting: false,
     error: null,
   });
+
+  useEffect(() => {
+    if (!projectId) {
+      return;
+    }
+
+    let isCancelled = false;
+
+    getTasksByProjectId(projectId)
+      .then((tasks) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setState({
+          tasks,
+          isLoading: false,
+          error: null,
+        });
+      })
+      .catch((error: unknown) => {
+        if (isCancelled) {
+          return;
+        }
+
+        setState({
+          tasks: [],
+          isLoading: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "Unable to load project tasks.",
+        });
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [projectId]);
 
   function clearMutationError() {
     setMutationState((current) => ({
@@ -41,10 +94,28 @@ export function useProjectTasks(
       return;
     }
 
-    const refreshedTasks =
-      await getTasksByProjectId(projectId);
+    try {
+      const tasks =
+        await getTasksByProjectId(
+          projectId,
+        );
 
-    setTasks(refreshedTasks);
+      setState({
+        tasks,
+        isLoading: false,
+        error: null,
+      });
+    } catch (error: unknown) {
+      setState((current) => ({
+        ...current,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unable to load project tasks.",
+      }));
+
+      throw error;
+    }
   }
 
   async function addTask(task: Task) {
@@ -57,10 +128,18 @@ export function useProjectTasks(
       const createdTask =
         await createTask(task);
 
-      setTasks((current) => [
+      setState((current) => ({
         ...current,
-        createdTask,
-      ]);
+        tasks: [
+          ...current.tasks,
+          createdTask,
+        ],
+      }));
+
+      setMutationState({
+        isSubmitting: false,
+        error: null,
+      });
     } catch (error: unknown) {
       setMutationState({
         isSubmitting: false,
@@ -72,11 +151,6 @@ export function useProjectTasks(
 
       throw error;
     }
-
-    setMutationState({
-      isSubmitting: false,
-      error: null,
-    });
   }
 
   async function editTask(
@@ -95,13 +169,20 @@ export function useProjectTasks(
           changes,
         );
 
-      setTasks((current) =>
-        current.map((task) =>
-          task.id === taskId
-            ? updatedTask
-            : task,
+      setState((current) => ({
+        ...current,
+        tasks: current.tasks.map(
+          (task) =>
+            task.id === taskId
+              ? updatedTask
+              : task,
         ),
-      );
+      }));
+
+      setMutationState({
+        isSubmitting: false,
+        error: null,
+      });
     } catch (error: unknown) {
       setMutationState({
         isSubmitting: false,
@@ -113,11 +194,6 @@ export function useProjectTasks(
 
       throw error;
     }
-
-    setMutationState({
-      isSubmitting: false,
-      error: null,
-    });
   }
 
   async function removeTask(
@@ -131,11 +207,17 @@ export function useProjectTasks(
     try {
       await deleteTask(taskId);
 
-      setTasks((current) =>
-        current.filter(
+      setState((current) => ({
+        ...current,
+        tasks: current.tasks.filter(
           (task) => task.id !== taskId,
         ),
-      );
+      }));
+
+      setMutationState({
+        isSubmitting: false,
+        error: null,
+      });
     } catch (error: unknown) {
       setMutationState({
         isSubmitting: false,
@@ -147,23 +229,25 @@ export function useProjectTasks(
 
       throw error;
     }
-
-    setMutationState({
-      isSubmitting: false,
-      error: null,
-    });
   }
 
   return {
-    tasks,
+    tasks: state.tasks,
+    isLoading: state.isLoading,
+    error: state.error,
+
     refreshTasks,
+
     addTask,
     editTask,
     removeTask,
+
     isSubmitting:
       mutationState.isSubmitting,
+
     mutationError:
       mutationState.error,
+
     clearMutationError,
   };
 }

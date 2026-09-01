@@ -1,24 +1,16 @@
 import {
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
 import { getProjectById } from "../../services/projectService";
-import {
-  getTasksByProjectId,
-} from "../../services/taskService";
 import { getUsers } from "../../services/userService";
 
 import type { Project } from "../../types/project";
-import type { Task } from "../../types/task";
 import type { User } from "../../types/user";
-
-import { getProjectSummary } from "./projects.utils";
 
 interface ProjectDetailsState {
   project: Project | null;
-  tasks: Task[];
   users: User[];
   isLoading: boolean;
   error: string | null;
@@ -27,7 +19,6 @@ interface ProjectDetailsState {
 
 const initialState: ProjectDetailsState = {
   project: null,
-  tasks: [],
   users: [],
   isLoading: true,
   error: null,
@@ -51,25 +42,21 @@ export function useProjectDetailsData(
 
     Promise.all([
       getProjectById(projectId),
-      getTasksByProjectId(projectId),
       getUsers(),
     ])
-      .then(
-        ([project, tasks, users]) => {
-          if (isCancelled) {
-            return;
-          }
+      .then(([project, users]) => {
+        if (isCancelled) {
+          return;
+        }
 
-          setState({
-            project,
-            tasks,
-            users,
-            isLoading: false,
-            error: null,
-            loadedProjectId: projectId,
-          });
-        },
-      )
+        setState({
+          project,
+          users,
+          isLoading: false,
+          error: null,
+          loadedProjectId: projectId,
+        });
+      })
       .catch((error: unknown) => {
         if (isCancelled) {
           return;
@@ -77,7 +64,6 @@ export function useProjectDetailsData(
 
         setState({
           project: null,
-          tasks: [],
           users: [],
           isLoading: false,
           error:
@@ -94,55 +80,26 @@ export function useProjectDetailsData(
   }, [projectId]);
 
   const isCurrentProjectLoaded =
-  state.loadedProjectId === projectId;
+    state.loadedProjectId === projectId;
 
-const isLoading =
-  Boolean(projectId) &&
-  !isCurrentProjectLoaded;
+  const isLoading =
+    Boolean(projectId) &&
+    !isCurrentProjectLoaded;
 
-const error =
-  isCurrentProjectLoaded
-    ? state.error
-    : null;
-
-const project =
-  isCurrentProjectLoaded
-    ? state.project
-    : null;
-
-const tasks = useMemo(
-  () =>
+  const project =
     isCurrentProjectLoaded
-      ? state.tasks
-      : [],
-  [isCurrentProjectLoaded, state.tasks],
-);
+      ? state.project
+      : null;
 
-const users = useMemo(
-  () =>
+  const users =
     isCurrentProjectLoaded
       ? state.users
-      : [],
-  [isCurrentProjectLoaded, state.users],
-);
+      : [];
 
-  const notFound =
-    !projectId ||
-    (!isLoading &&
-      state.loadedProjectId === projectId &&
-      !state.error &&
-      !state.project);
-
-  const summary = useMemo(() => {
-    if (!project) {
-      return null;
-    }
-
-    return getProjectSummary(
-      project,
-      tasks,
-    );
-  }, [project, tasks]);
+  const error =
+    isCurrentProjectLoaded
+      ? state.error
+      : null;
 
   async function reload() {
     if (!projectId) {
@@ -157,16 +114,14 @@ const users = useMemo(
     }));
 
     try {
-      const [project, tasks, users] =
+      const [project, users] =
         await Promise.all([
           getProjectById(projectId),
-          getTasksByProjectId(projectId),
           getUsers(),
         ]);
 
       setState({
         project,
-        tasks,
         users,
         isLoading: false,
         error: null,
@@ -175,7 +130,6 @@ const users = useMemo(
     } catch (error: unknown) {
       setState({
         project: null,
-        tasks: [],
         users: [],
         isLoading: false,
         error:
@@ -187,14 +141,19 @@ const users = useMemo(
     }
   }
 
+  const notFound =
+    !projectId ||
+    (!isLoading &&
+      isCurrentProjectLoaded &&
+      !error &&
+      !project);
+
   return {
     project,
-    tasks,
     users,
     isLoading,
     error,
     notFound,
-    summary,
     reload,
   };
 }

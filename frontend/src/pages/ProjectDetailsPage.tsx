@@ -40,18 +40,27 @@ export function ProjectDetailsPage() {
   const [taskActionError, setTaskActionError] = useState<string | null>(null);
 
   const { projectId } = useParams();
-  const { project, tasks, users, summary, isLoading, error, notFound, reload } =
-    useProjectDetailsData(projectId);
-
   const {
-    tasks: projectTasks,
-    addTask,
-    editTask,
-    removeTask,
-    isSubmitting: isTaskSubmitting,
-    mutationError,
-    clearMutationError,
-  } = useProjectTasks(projectId, tasks);
+  project,
+  users,
+  isLoading: isProjectLoading,
+  error: projectError,
+  notFound,
+  reload,
+} = useProjectDetailsData(projectId);
+
+const {
+  tasks: projectTasks,
+  isLoading: areTasksLoading,
+  error: tasksError,
+  refreshTasks,
+  addTask,
+  editTask,
+  removeTask,
+  isSubmitting: isTaskSubmitting,
+  mutationError,
+  clearMutationError,
+} = useProjectTasks(projectId);
 
   const emptyTaskValues: TaskFormValues = {
     title: "",
@@ -95,36 +104,78 @@ export function ProjectDetailsPage() {
     }
   }
 
-  if (isLoading) {
-    return (
-      <>
-        <header className="page-header">
-          <p>Loading project...</p>
-        </header>
-      </>
-    );
-  }
+  if (isProjectLoading) {
+  return (
+    <>
+      <header className="page-header">
+        <p>Loading project...</p>
+      </header>
+    </>
+  );
+}
 
-  if (notFound) {
-    return (
-      <EmptyState
-        title="Project not found"
-        description="The project you're looking for doesn't exist or may have been removed."
-        action={<Link to="/projects">Back to projects</Link>}
-      />
-    );
-  }
+if (notFound) {
+  return (
+    <EmptyState
+      title="Project not found"
+      description="The project you're looking for doesn't exist or may have been removed."
+      action={
+        <Link to="/projects">
+          Back to projects
+        </Link>
+      }
+    />
+  );
+}
 
-  if (error || !project || !summary) {
-    return (
-      <ErrorState
-        message={error ?? "Unable to load project."}
-        onRetry={reload}
-      />
-    );
-  }
+if (projectError || !project) {
+  return (
+    <ErrorState
+      message={
+        projectError ??
+        "Unable to load project."
+      }
+      onRetry={reload}
+    />
+  );
+}
 
-  const currentSummary = getProjectSummary(project, projectTasks);
+if (areTasksLoading) {
+  return (
+    <>
+      <header className="page-header">
+        <h1 className="page-title">
+          {project.name}
+        </h1>
+
+        <p className="page-description">
+          {project.description}
+        </p>
+      </header>
+
+      <Card>
+        <div className="dashboard-loading">
+          Loading tasks...
+        </div>
+      </Card>
+    </>
+  );
+}
+
+if (tasksError) {
+  return (
+    <ErrorState
+      message={tasksError}
+      onRetry={refreshTasks}
+    />
+  );
+}
+
+const currentSummary =
+  getProjectSummary(
+    project,
+    projectTasks,
+  );
 
   async function handleEditTask(values: TaskFormValues) {
     if (!editingTask) {
