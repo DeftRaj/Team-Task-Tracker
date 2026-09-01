@@ -19,6 +19,29 @@ export async function getProjects(): Promise<Project[]> {
   }));
 }
 
+export async function getProjectById(
+  projectId: string,
+): Promise<Project | null> {
+  await simulateDelay();
+
+  if (consumeSimulatedFailure()) {
+    throw new Error("Unable to load project.");
+  }
+
+  const project = mockDatabase.projects.find(
+    (item) => item.id === projectId,
+  );
+
+  if (!project) {
+    return null;
+  }
+
+  return {
+    ...project,
+    memberIds: [...project.memberIds],
+  };
+}
+
 export async function createProject(
   project: Project,
 ): Promise<Project> {
