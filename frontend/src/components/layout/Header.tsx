@@ -24,7 +24,8 @@ export function Header({
     user ? getStoredAvatar(user.id) : "",
   );
 
-  if (!user) {
+ 
+ if (!user) {
     return null;
   }
 

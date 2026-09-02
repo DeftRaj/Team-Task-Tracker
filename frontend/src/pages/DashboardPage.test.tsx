@@ -74,8 +74,10 @@ describe("DashboardPage", () => {
     renderDashboard();
 
     expect(
-      screen.getByText("Loading dashboard..."),
-    ).toBeInTheDocument();
+      screen.getByRole("status", {
+        name: "Loading dashboard",
+      }),
+      ).toBeInTheDocument();
   });
 
   it("shows the populated dashboard when tasks load successfully", async () => {
