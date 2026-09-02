@@ -20,20 +20,19 @@ export function Header({
 }: HeaderProps) {
   const { user, logout } = useAuth();
 
-  const [avatarUrl, setAvatarUrl] = useState(() =>
-    user ? getStoredAvatar(user.id) : "",
-  );
-
- 
- if (!user) {
+  const [avatarUrl, setAvatarUrl] = useState("");
+// fixed the 'user' is possibly 'null' bug by adding  const userId = user?.id; and checking 
+  if (!user) {
     return null;
   }
+
+  const userId = user.id;
 
   function handleAvatarChange(
     nextAvatarUrl: string,
   ) {
     localStorage.setItem(
-      `profile-avatar:${user.id}`,
+      `profile-avatar:${userId}`,
       nextAvatarUrl,
     );
 
@@ -60,7 +59,7 @@ export function Header({
       <div className="app-header-user">
         <ProfileMenu
           user={user}
-          avatarUrl={avatarUrl}
+          avatarUrl={avatarUrl || getStoredAvatar(userId)}
           onAvatarChange={handleAvatarChange}
           onLogout={logout}
         />
