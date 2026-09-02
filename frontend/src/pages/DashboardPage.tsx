@@ -5,7 +5,7 @@ import { ErrorState } from "../components/feedback/ErrorState";
 import { EmptyState } from "../components/feedback/EmptyState";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
-
+import { LoadingState } from "../components/feedback/LoadingState";
 import { useDashboardData } from "../features/dashboard/useDashboardData";
 import type {
   TaskPriority,
@@ -77,33 +77,7 @@ export function DashboardPage() {
   } = useDashboardData();
 
   if (isLoading) {
-    return (
-      <>
-        <header className="page-header">
-          <h1 className="page-title">
-            Dashboard
-          </h1>
-        </header>
-
-        <div
-          className="dashboard-grid dashboard-loading-grid"
-          aria-live="polite"
-          aria-busy="true"
-        >
-          <Card>
-            <div className="dashboard-loading">
-              Loading dashboard...
-            </div>
-          </Card>
-
-          <Card>
-            <div className="dashboard-loading">
-              Loading task summary...
-            </div>
-          </Card>
-        </div>
-      </>
-    );
+  return <LoadingState message="Loading dashboard" />;
   }
 
   if (error) {
@@ -170,7 +144,7 @@ export function DashboardPage() {
 
         <Link to="/projects">
           <Button type="button">
-            View projects
+            View Projects
           </Button>
         </Link>
       </header>

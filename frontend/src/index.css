@@ -1603,6 +1603,236 @@ a {
   cursor: pointer;
 }
 
+/* Loading and profile css */
+/* Loading state */
+
+.loading-state {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.loading-state-dots {
+  display: inline-block;
+  width: 1.5em;
+  overflow: hidden;
+  text-align: left;
+  animation: loading-dots 1.4s steps(4, end) infinite;
+}
+
+@keyframes loading-dots {
+  0% {
+    width: 0;
+  }
+
+  25% {
+    width: 0.4em;
+  }
+
+  50% {
+    width: 0.8em;
+  }
+
+  75%,
+  100% {
+    width: 1.2em;
+  }
+}
+
+/* Profile trigger */
+
+.profile-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 0;
+  padding: 0.25rem;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 0.75rem;
+}
+
+.profile-trigger:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.profile-trigger:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Avatar */
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 2.5rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
+.avatar img,
+.profile-avatar-large img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+/* Profile dialog */
+
+.profile-dialog {
+  width: min(24rem, calc(100vw - 2rem));
+  padding: 0;
+  border: 0;
+  border-radius: 1rem;
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.2);
+}
+
+.profile-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.profile-dialog-content {
+  padding: 1.5rem;
+}
+
+.profile-dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.profile-dialog-eyebrow {
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.profile-dialog-header h2 {
+  margin: 0;
+}
+
+.profile-dialog-close {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  font-size: 1.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.profile-dialog-close:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.profile-dialog-close:focus-visible,
+.profile-action-button:focus-visible,
+.profile-logout-button:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+}
+
+.profile-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.profile-avatar-large {
+  width: 4.5rem;
+  height: 4.5rem;
+  flex: 0 0 4.5rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.profile-identity {
+  min-width: 0;
+}
+
+.profile-identity h3 {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.profile-identity p {
+  margin: 0.25rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.profile-actions {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.profile-action-button,
+.profile-logout-button {
+  min-height: 2.75rem;
+  border-radius: 0.625rem;
+  padding: 0.625rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-action-button {
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+.profile-logout-button {
+  border: 1px solid currentColor;
+  background: transparent;
+}
+
+.profile-upload-error {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  .app-header-user-name {
+    display: none;
+  }
+
+  .profile-dialog-content {
+    padding: 1.25rem;
+  }
+}
+
 /* Media Queries */
 /* sidebar responsive code  */
 @media (max-width: 900px) {

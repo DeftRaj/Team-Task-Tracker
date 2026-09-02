@@ -1,16 +1,43 @@
+import { useState } from "react";
+
 import { useAuth } from "../../features/auth/useAuth";
+import { ProfileMenu } from "./ProfileMenu";
 
 interface HeaderProps {
   onOpenNavigation: () => void;
 }
 
+function getStoredAvatar(userId: string) {
+  return (
+    localStorage.getItem(
+      `profile-avatar:${userId}`,
+    ) ?? ""
+  );
+}
+
 export function Header({
   onOpenNavigation,
 }: HeaderProps) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
-  const userInitial =
-    user?.name?.charAt(0).toUpperCase() ?? "U";
+  const [avatarUrl, setAvatarUrl] = useState(() =>
+    user ? getStoredAvatar(user.id) : "",
+  );
+
+  if (!user) {
+    return null;
+  }
+
+  function handleAvatarChange(
+    nextAvatarUrl: string,
+  ) {
+    localStorage.setItem(
+      `profile-avatar:${user.id}`,
+      nextAvatarUrl,
+    );
+
+    setAvatarUrl(nextAvatarUrl);
+  }
 
   return (
     <header className="app-header">
@@ -30,16 +57,12 @@ export function Header({
       </div>
 
       <div className="app-header-user">
-        <span className="app-header-user-name">
-          {user?.name}
-        </span>
-
-        <div
-          className="avatar"
-          aria-hidden="true"
-        >
-          {userInitial}
-        </div>
+        <ProfileMenu
+          user={user}
+          avatarUrl={avatarUrl}
+          onAvatarChange={handleAvatarChange}
+          onLogout={logout}
+        />
       </div>
     </header>
   );

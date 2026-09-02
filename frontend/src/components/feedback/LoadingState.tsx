@@ -1,0 +1,24 @@
+interface LoadingStateProps {
+  message?: string;
+}
+
+export function LoadingState({
+  message = "Loading",
+}: LoadingStateProps) {
+  return (
+    <div
+      className="loading-state"
+      role="status"
+      aria-live="polite"
+      aria-label={message}
+    >
+      <span>{message}</span>
+      <span
+        className="loading-state-dots"
+        aria-hidden="true"
+      >
+        ...
+      </span>
+    </div>
+  );
+}
