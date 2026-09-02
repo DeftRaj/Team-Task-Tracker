@@ -28,6 +28,7 @@ import {
 } from "../features/tasks/taskForm.validation";
 
 import { DeleteTaskDialog } from "../features/tasks/DeleteTaskDialog";
+import { LoadingState } from "../components/feedback/LoadingState";
 
 export function ProjectDetailsPage() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -105,13 +106,7 @@ const {
   }
 
   if (isProjectLoading) {
-  return (
-    <>
-      <header className="page-header">
-        <p>Loading project...</p>
-      </header>
-    </>
-  );
+  return <LoadingState message="Loading project" />;
 }
 
 if (notFound) {
@@ -153,11 +148,7 @@ if (areTasksLoading) {
         </p>
       </header>
 
-      <Card>
-        <div className="dashboard-loading">
-          Loading tasks...
-        </div>
-      </Card>
+      <LoadingState message="Loading tasks" />
     </>
   );
 }

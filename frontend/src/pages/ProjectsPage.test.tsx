@@ -106,8 +106,8 @@ describe("ProjectsPage", () => {
     renderProjectsPage();
 
     expect(
-      screen.getByText("Loading projects..."),
-    ).toBeInTheDocument();
+      screen.getByRole("status"),
+    ).toHaveTextContent("Loading projects");
   });
 
   it("renders projects after loading", async () => {

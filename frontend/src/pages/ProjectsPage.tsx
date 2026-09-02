@@ -1,9 +1,8 @@
 import { useState } from "react";
-
 import { Button } from "../components/ui/Button";
-import { Card } from "../components/ui/Card";
 import { EmptyState } from "../components/feedback/EmptyState";
 import { ErrorState } from "../components/feedback/ErrorState";
+import { LoadingState } from "../components/feedback/LoadingState";
 import { Modal } from "../components/ui/Modal";
 
 import { useAuth } from "../features/auth/useAuth";
@@ -93,22 +92,8 @@ export function ProjectsPage() {
   }
 
   if (isLoading) {
-    return (
-      <>
-        <header className="page-header">
-          <h1 className="page-title">
-            Projects
-          </h1>
-        </header>
-
-        <Card>
-          <div className="dashboard-loading">
-            Loading projects...
-          </div>
-        </Card>
-      </>
-    );
-  }
+  return <LoadingState message="Loading projects" />;
+}
 
   if (error) {
     return (

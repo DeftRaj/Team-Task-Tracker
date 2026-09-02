@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 
 import { SignInPage } from "../pages/SignInPage";
 import { DashboardPage } from "../pages/DashboardPage";
@@ -9,6 +9,10 @@ import { NotFoundPage } from "../pages/NotFoundPage";
 import { ProtectedLayout } from "../components/layout/ProtectedLayout";
 
 export const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Navigate to="/sign-in" />,
+  },
   {
     path: "/sign-in",
     element: <SignInPage />,
