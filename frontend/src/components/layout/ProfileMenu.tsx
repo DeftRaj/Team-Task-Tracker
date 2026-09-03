@@ -164,12 +164,12 @@ export function ProfileMenu({
         <div className="profile-dialog-content">
           <div className="profile-dialog-header">
             <div>
-              <p className="profile-dialog-eyebrow">
+              {/* <p className="profile-dialog-eyebrow">
                 Account
-              </p>
+              </p> */}
 
               <h2 id="profile-dialog-title">
-                Your profile
+                Account
               </h2>
             </div>
 

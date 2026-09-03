@@ -329,7 +329,6 @@ const currentSummary =
                 }
               />
             ) : (
-              <Card>
                 <TaskList
                   tasks={visibleTasks}
                   users={users}
@@ -344,7 +343,6 @@ const currentSummary =
                   onStatusChange={handleStatusChange}
                   isSubmitting={isTaskSubmitting}
                 />
-              </Card>
             )}
           </>
         )}

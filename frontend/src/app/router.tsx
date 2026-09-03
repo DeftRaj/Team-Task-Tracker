@@ -11,7 +11,7 @@ import { ProtectedLayout } from "../components/layout/ProtectedLayout";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/sign-in" />,
+    element: <Navigate to="/sign-in" replace/>,
   },
   {
     path: "/sign-in",

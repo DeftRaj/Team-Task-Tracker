@@ -8,9 +8,7 @@ import type {
 import type { User } from "../../types/user";
 
 import {
-  formatTaskStatus,
   getTaskPriorityVariant,
-  getTaskStatusVariant,
 } from "./task.utils";
 
 interface TaskRowProps {
@@ -44,86 +42,88 @@ export function TaskRow({
   onStatusChange,
   isSubmitting,
 }: TaskRowProps) {
+  const statusSelectId =
+    `task-status-${task.id}`;
+
   return (
     <article className="task-row">
-      <div className="task-row-main">
-        <h3>{task.title}</h3>
+      <header className="task-row-header">
+        <div className="task-row-main">
+          <h3>{task.title}</h3>
 
-        {task.description && (
-          <p>{task.description}</p>
-        )}
-      </div>
-
-      <div className="task-row-status">
-        <span className="task-row-label">
-          Status
-        </span>
-
-        <select
-          aria-label={`Change status for ${task.title}`}
-          value={task.status}
-          disabled={isSubmitting}
-          onChange={(event) =>
-            onStatusChange(
-              task.id,
-              event.target.value as TaskStatus,
-            )
-          }
-        >
-          <option value="TODO">
-            To Do
-          </option>
-
-          <option value="IN_PROGRESS">
-            In Progress
-          </option>
-
-          <option value="DONE">
-            Done
-          </option>
-        </select>
-
-        <Badge
-          variant={getTaskStatusVariant(
-            task.status,
+          {task.description && (
+            <p>{task.description}</p>
           )}
-        >
-          {formatTaskStatus(task.status)}
-        </Badge>
-      </div>
+        </div>
 
-      <div className="task-row-priority">
-        <span className="task-row-label">
-          Priority
-        </span>
+        <div className="task-row-priority">
+          <span className="task-row-label">
+            Priority
+          </span>
 
-        <Badge
-          variant={getTaskPriorityVariant(
-            task.priority,
-          )}
-        >
-          {task.priority}
-        </Badge>
-      </div>
+          <Badge
+            variant={getTaskPriorityVariant(
+              task.priority,
+            )}
+          >
+            {task.priority}
+          </Badge>
+        </div>
+      </header>
 
-      <div className="task-row-assignee">
-        <span className="task-row-label">
-          Assignee
-        </span>
+      <div className="task-row-meta">
+        <div className="task-row-status">
+          <label
+            className="task-row-label"
+            htmlFor={statusSelectId}
+          >
+            Status
+          </label>
 
-        <span>
-          {assignee?.name ?? "Unassigned"}
-        </span>
-      </div>
+          <select
+            id={statusSelectId}
+            value={task.status}
+            disabled={isSubmitting}
+            onChange={(event) =>
+              onStatusChange(
+                task.id,
+                event.target.value as TaskStatus,
+              )
+            }
+          >
+            <option value="TODO">
+              To Do
+            </option>
 
-      <div className="task-row-due-date">
-        <span className="task-row-label">
-          Due
-        </span>
+            <option value="IN_PROGRESS">
+              In Progress
+            </option>
 
-        <time dateTime={task.dueDate}>
-          {formatDate(task.dueDate)}
-        </time>
+            <option value="DONE">
+              Done
+            </option>
+          </select>
+        </div>
+
+        <div className="task-row-assignee">
+          <span className="task-row-label">
+            Assignee
+          </span>
+
+          <span>
+            {assignee?.name ?? "Unassigned"}
+          </span>
+        </div>
+
+        <div className="task-row-due-date">
+          <span className="task-row-label">
+            Due
+          </span>
+
+          <time dateTime={task.dueDate}>
+            {formatDate(task.dueDate)}
+          </time>
+        </div>
       </div>
 
       <div className="task-row-actions">
