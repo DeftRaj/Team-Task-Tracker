@@ -312,7 +312,7 @@ a {
   display: grid;
   place-items: center;
 
-  padding: clamp(40px, 7vw, 96px);
+  padding: clamp(40px, 3vw, 56px);
 
   background:
     radial-gradient(
@@ -426,8 +426,7 @@ a {
   display: grid;
   place-items: center;
 
-  padding:
-    clamp(24px, 6vw, 72px);
+  padding:clamp(40px, 3vw, 56px);
 }
 
 .sign-in-card {
@@ -1981,6 +1980,75 @@ a {
 
   .profile-dialog-content {
     padding: 1.25rem;
+  }
+}
+
+/* Dev tools panel */
+
+.dev-tools {
+  position: fixed;
+  right: var(--spacing-4);
+  bottom: var(--spacing-4);
+  z-index: 40;
+
+  max-width: min(320px, calc(100vw - var(--spacing-8)));
+
+  padding: var(--spacing-3) var(--spacing-4);
+  border: 1px dashed var(--color-danger);
+  border-radius: var(--radius-md);
+  background-color: var(--color-danger-background);
+  box-shadow: var(--shadow-sm);
+}
+
+.dev-tools-label {
+  margin: 0 0 var(--spacing-2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-danger);
+}
+
+.dev-tools-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.dev-tools-button {
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.dev-tools-button:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.dev-tools-button-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.dev-tools-button-danger:hover {
+  background-color: var(--color-danger-background);
+}
+
+.dev-tools-message {
+  margin: var(--spacing-2) 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+}
+
+@media (max-width: 768px) {
+  .dev-tools {
+    left: var(--spacing-4);
+    right: var(--spacing-4);
+    max-width: none;
   }
 }
 

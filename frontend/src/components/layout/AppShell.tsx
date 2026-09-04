@@ -6,6 +6,7 @@ import {
 
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
+import { DevTools } from "../dev/DevTools";
 
 export function AppShell({
   children,
@@ -65,6 +66,7 @@ export function AppShell({
           {children}
         </main>
       </div>
+      <DevTools />
     </div>
   );
 }
